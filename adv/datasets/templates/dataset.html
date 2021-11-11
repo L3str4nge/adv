@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dataset details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="col-lg-12">
+<h1>Dataset: {{ dataset.id }}</h1>
+<button id="load_more" data-starts_from="0" type="button" class="btn btn-primary">LOAD MORE</button>
+<a href="{% url 'value_count'  uuid=dataset.id %}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Value
+    count view</a>
+<a href="{% url 'dataset_list' %}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Dataset list</a>
+
+<div id="output" class="container"></div>
+<div class="col-lg-12">
+    <table class="table">
+        <thead><tr id="table_headers"></tr></thead>
+        <tbody id="table_body"></tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    (function () {
+
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+        var output = document.getElementById('output');
+
+        var updateHeaders = function (headers) {
+            var tblHeaders = document.getElementById('table_headers');
+            tblHeaders.innerHTML = ""
+            var html = ""
+            for (var header of headers) {
+                html += '<th scope="col">' + header + '</th>'
+            }
+            tblHeaders.innerHTML = html;
+        };
+
+        var updateRows = function (rows) {
+            var tblHeaders = document.getElementById('table_body');
+            var html = ""
+            for (var row of rows) {
+                var rowContent = "";
+                for (var item of row) {
+                    rowContent += '<td>' + item + '</td>'
+                }
+
+                html += '<tr>' + rowContent + '</tr>';
+
+            }
+            tblHeaders.innerHTML += html;
+        };
+
+        var loadDataset = function () {
+
+            var startsFrom = document.getElementById('load_more').dataset.starts_from
+            var params = {"starts_from": startsFrom}
+            axios.get('/api/dataset/{{ dataset.id }}/', {params})
+                .then(function (res) {
+                    output.className = 'container';
+
+                    console.log(res.data)
+                    document.getElementById('load_more').dataset.starts_from = parseInt(startsFrom) + 10;
+
+                    updateHeaders(res.data.content.headers);
+                    updateRows(res.data.content.rows);
+                })
+                .catch(function (err) {
+                    console.log(err.message)
+                    output.className = 'container text-danger';
+                    output.innerHTML = err.message;
+                });
+        };
+        document.getElementById('load_more').onclick = loadDataset
+
+        loadDataset()
+    })();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dataset count value page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="col-lg-12">
+<h1>Dataset: {{ dataset.id }}</h1>
+<a href="{% url 'dataset_details'  uuid=dataset.id %}" class="btn btn-secondary btn-lg" role="button"
+   aria-disabled="true">Dataset details</a>
+<a href="{% url 'dataset_list' %}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Dataset list</a>
+<h4>Please select at least one field, api will return bad request otherwise</h4>
+<div id="output" class="container"></div>
+<div class="col-lg-12">
+    <div id="filter-container"></div>
+    <button id="load" data-starts_from="0" type="button" class="btn btn-primary">LOAD</button>
+
+    <table class="table">
+        <thead>
+        <tr id="table_headers"></tr>
+        </thead>
+        <tbody id="table_body"></tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    (function () {
+        var output = document.getElementById('output');
+
+        var loadHeaders = function () {
+            axios.get('/api/dataset/{{ dataset.id }}/headers')
+                .then(function (res) {
+                    output.className = 'container';
+                    console.log(res.data)
+                    updateFilters(res.data.headers);
+                })
+                .catch(function (err) {
+                    console.log(err.message)
+                    output.className = 'container text-danger';
+                    output.innerHTML = err.message;
+                });
+        };
+        loadHeaders();
+        var updateFilters = function (headers) {
+            var filters = document.getElementById('filter-container');
+            filters.innerHTML = ""
+            var html = ""
+            for (var header of headers) {
+                var checkBoxId = "checkbox_" + header;
+                html += '<div class="form-check form-check-inline">' +
+                    '<input class="form-check-input" name="checkbox" type="checkbox" id="' + checkBoxId + '" value="' + header + '">' +
+                    '<label class="form-check-label" for="inlineCheckbox1">' + header + '</label></div>'
+            }
+            filters.innerHTML = html;
+        };
+
+
+        var updateHeaders = function (headers) {
+            var tblHeaders = document.getElementById('table_headers');
+            tblHeaders.innerHTML = ""
+            var html = ""
+            for (var header of headers) {
+                html += '<th scope="col">' + header + '</th>'
+            }
+            tblHeaders.innerHTML = html;
+        };
+
+        var updateRows = function (rows) {
+            var tblHeaders = document.getElementById('table_body');
+            var html = ""
+            for (var row of rows) {
+                var rowContent = "";
+                for (var item of row) {
+                    rowContent += '<td>' + item + '</td>'
+                }
+
+                html += '<tr>' + rowContent + '</tr>';
+
+            }
+            tblHeaders.innerHTML = html;
+        };
+
+        document.getElementById('load').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[name=checkbox]:checked');
+            var countBy = [];
+
+            for (var check of checkboxes) {
+                countBy.push(check.value)
+            }
+            var params = {"count_by": countBy.join(",")}
+            console.log(params)
+
+            axios.get('/api/dataset/{{ dataset.id }}/', {params})
+                .then(function (res) {
+                    output.innerHTML = "success";
+                    output.className = 'container';
+                    console.log(res.data)
+                    updateHeaders(res.data.content.headers);
+                    updateRows(res.data.content.rows);
+                })
+                .catch(function (err) {
+                    console.log(err.message)
+                    output.className = 'container text-danger';
+                    output.innerHTML = err.message;
+                });
+        };
+    })();
+
+
+</script>
+</body>
+</html>

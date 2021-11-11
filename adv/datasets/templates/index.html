@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="container">
+<h1>Datasets Explorer</h1>
+
+<form role="form" class="form" onsubmit="return false;">
+    {% csrf_token %}
+    <button id="post" type="button" class="btn btn-primary">FETCH</button>
+</form>
+
+<div id="output" class="container"></div>
+<div class="list-group">
+    <br>
+    {% for dataset in datasets %}
+        <a href="/dataset/{{ dataset.pk }}" class="list-group-item list-group-item-action">{{ dataset }}</a>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    (function () {
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+        var output = document.getElementById('output');
+        document.getElementById('post').onclick = function () {
+            var data = {"name": "swapi"};
+
+            axios.post('api/dataset/', data)
+                .then(function (res) {
+                    output.className = 'container';
+                    output.innerHTML = res.data;
+                    window.location.reload(true);
+                })
+                .catch(function (err) {
+                    output.className = 'container text-danger';
+                    output.innerHTML = err.message;
+                });
+        };
+    })();
+
+</script>
+</body>
+</html>

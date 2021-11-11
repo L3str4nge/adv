@@ -1,0 +1,6 @@
+class IntegrationNotFound(Exception):
+    ...
+
+
+class InvalidStorageType(Exception):
+    ...
