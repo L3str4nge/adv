@@ -19,7 +19,7 @@ class Dataset(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     file = models.FileField()
     created = models.DateTimeField(default=datetime.now, blank=True)
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=10, db_index=True)
 
     class Meta:
         ordering = ('-created',)
