@@ -2,7 +2,7 @@
 
 ### Architecture overview
 Application has been designed to be open to add a new API's to handle. Each external API is called `integration`.
-The main application `datasets` responsible for saving/displaying collections knows nothing about connecting 
+The main application `datasets` which is responsible for saving/displaying collections knows nothing about connecting 
 and interacting the external API and also transforming the data. The whole logic shares the same interface which is 
 declared in `core` module. If we want to handle another API we have to create another module, implement the interface
 and register that module in the `settings` without touching the `datasets` app. This will work in opposite way: if we
