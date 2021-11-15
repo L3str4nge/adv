@@ -22,6 +22,6 @@ class BaseIntegration(metaclass=ABCMeta):
     def transform(self, data: dict) -> Generator:
         ...
 
-    def collect_and_transform(self):
+    def collect_and_transform(self) -> Generator:
         for collected_data in self.collect():
             yield from self.transform(collected_data)

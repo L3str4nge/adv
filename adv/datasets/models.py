@@ -19,7 +19,7 @@ class Dataset(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     file = models.FileField()
     created = models.DateTimeField(default=datetime.now, blank=True)
-    name = models.CharField(max_length=10, db_index=True)
+    name = models.CharField(max_length=10, db_index=True, help_text="Integration name")
 
     class Meta:
         ordering = ('-created',)
@@ -28,7 +28,7 @@ class Dataset(models.Model):
         return str(self.created)
 
     @classmethod
-    def from_integration(cls, name, storage_type: str = "csv"):
+    def from_integration(cls, name: str, storage_type: str = "csv") -> 'Dataset':
         integration_class: Type[BaseIntegration] = find_integration_by_name(name)
 
         storage = Storage.get(storage_type)
@@ -46,7 +46,7 @@ class Dataset(models.Model):
         instance.file.save(f"{instance}.csv", content_file)
         return instance
 
-    def get_dataset_content(self, params: dict):
+    def get_dataset_content(self, params: dict) -> dict:
         if 'count_by' in params:
             headers, rows = self.get_countable_dataset_rows(params)
         else:
@@ -57,7 +57,7 @@ class Dataset(models.Model):
             "rows": rows
         }
 
-    def get_countable_dataset_rows(self, params: dict):
+    def get_countable_dataset_rows(self, params: dict) -> tuple:
         log.info(f"Getting countable dataset rows for params {params}")
         loader = get_loader_for_file(self.file)
         table = loader(self.file)
@@ -76,7 +76,7 @@ class Dataset(models.Model):
         rows = list(petl.records(counted_table))
         return headers, rows
 
-    def get_default_dataset_rows(self, params: dict):
+    def get_default_dataset_rows(self, params: dict) -> tuple:
         starts_from = int(params.get("starts_from", 0))
 
         if starts_from < 0:
@@ -90,7 +90,7 @@ class Dataset(models.Model):
 
         return headers, rows
 
-    def get_dataset_headers(self):
+    def get_dataset_headers(self) -> list:
         loader = get_loader_for_file(self.file)
         table = loader(self.file)
         return list(petl.header(table))

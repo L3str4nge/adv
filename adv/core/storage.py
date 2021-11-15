@@ -11,7 +11,7 @@ class CSVStorage:
     def write(self, data: list):
         self.writer.writerow(data)
 
-    def get_content_file(self, encoding) -> ContentFile:
+    def get_content_file(self, encoding: str) -> ContentFile:
         return ContentFile(self.buffer.getvalue().encode(encoding))
 
 
