@@ -1,7 +1,7 @@
 # SWAPI EXPLORER
 
 ### Architecture overview
-Application has been designed to be open to add a new API to handle. Each external API is called `integration`.
+Application has been designed to be open to add a new API's to handle. Each external API is called `integration`.
 The main application `datasets` responsible for saving/displaying collections knows nothing about connecting 
 and interacting the external API and also transforming the data. The whole logic shares the same interface which is 
 declared in `core` module. If we want to handle another API we have to create another module, implement the interface
@@ -27,59 +27,62 @@ I wonder if transforming data based on `dict` is good approach (I suppose `petl`
 of data), but for now I only use `petl` for getting data from the file and make counting for the `Value count` functionality.
 
 ### Installation and runnnig
-The entry endpoint `https://swapi.co/api/people/` is not working but I figured out that `https://swapi.dev/` working like
+The entry endpoint `https://swapi.co/api/people/` is not working but I figured out that `https://swapi.dev/` is working like
 a charm and this endpoint is used by default. If any cases when this service won't be available I prepared forked version
 to run locally: `https://github.com/L3str4nge/swapi`.
 
 1. Docker
-```
-git clone https://github.com/L3str4nge/adv
-cd adv
+    ```
+    git clone https://github.com/L3str4nge/adv
+    cd adv
 
-# If you want to run db+application
-make run_all
+    # If yo u want to run db+application
+    make run_all
 
-# If you want to run db only
-make run_db
-
-#If you want to run application only
-make run_backend
-```
+    # If you want to run db only
+    make run_db
+    
+    #If you want to run application only
+    make run_backend
+    ```
 
 2. Without Docker
 
-```
-git clone https://github.com/L3str4nge/adv
-cd adv
-```
-
-Then you have to set up env variables which are defined in `.env.template`. Do not set db env variables if you want to
-set up `sqlite` database.
-
-Run following script:
-`scripts/run.sh`
+    ```
+    git clone https://github.com/L3str4nge/adv
+    cd adv
+    ```
+    
+    Then you have to set up env variables which are defined in `.env.template`. Do not set db env variables if you want to
+    set up `sqlite` database.
+    
+    Run following script:
+    `scripts/run.sh`
+    
 
 3. Run with Docker and SWAPI locally
 
-If you don't want to use `https://swapi.dev/` or it is not working you can set up project locally:
-```
-git clone https://github.com/L3str4nge/adv
-cd adv
-
-# Create network for separate containers
-make network
-
-# Install SWAPI (it will be installed in your /tmp directory)
-make swapi
-
-# Make .env.template like this:
-#SWAPI_URL="https://swapi.dev/api"
-SWAPI_URL="http://swapi:8002/api"
-
-# Run
-make run_all
-```
-
+    If you don't want to use `https://swapi.dev/` or it is not working you can set up project locally:
+    ```
+    git clone https://github.com/L3str4nge/adv
+    cd adv
+    
+    # Create network for separate containers
+    make network
+    
+    # Install SWAPI (it will be installed in your /tmp directory)
+    make swapi
+    
+    # Make .env.template like this:
+    #SWAPI_URL="https://swapi.dev/api"
+    SWAPI_URL="http://swapi:8002/api"
+    
+    # Run
+    make run_all
+    ```
+    
 4. Run tests
 
-`make test` This will run pytest.
+    `make test` This will run pytest in docker container.
+    
+    Run `pytest` in root directory to run tests locally.

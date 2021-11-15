@@ -1,5 +1,5 @@
 test:
-	pytest
+	docker-compose run backend pytest
 
 run_all:
 	docker-compose up
