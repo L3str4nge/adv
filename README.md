@@ -36,8 +36,8 @@ to run locally: `https://github.com/L3str4nge/swapi`.
     git clone https://github.com/L3str4nge/adv
     cd adv
 
-    # If yo u want to run db+application
-    make run_all
+    # If yo u want to run db+application (not recommended because app can be up before db at the first time)
+    make run_all 
 
     # If you want to run db only
     make run_db
