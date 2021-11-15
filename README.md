@@ -49,8 +49,11 @@ to run locally: `https://github.com/L3str4nge/swapi`.
 2. Without Docker
 
     ```
+    python -m venv adv_venv
+    source adv_venv/bin/activate
     git clone https://github.com/L3str4nge/adv
     cd adv
+    pip install -r requirements.txt
     ```
     
     Then you have to set up env variables which are defined in `.env.template`. Do not set db env variables if you want to
