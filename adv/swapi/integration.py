@@ -41,7 +41,7 @@ class SWAPI(BaseIntegration):
 
     def transform(self, data: dict) -> Generator:
         log.info("Transforming collected data...")
-
+        
         self._create_date_field(data)
         self._transform_homeworld(data)
         self._drop_fields(data)

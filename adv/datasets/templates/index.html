@@ -31,6 +31,7 @@
         var output = document.getElementById('output');
         document.getElementById('post').onclick = function () {
             var data = {"name": "swapi"};
+            output.innerHTML = "processing";
 
             axios.post('api/dataset/', data)
                 .then(function (res) {
