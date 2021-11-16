@@ -11,7 +11,7 @@ decide to stop to maintain an api anymore, we can just remove whole package.
 * added 16.11.2021 (after solution sent):
 
     a) Current implementation does not require any background tasks etc. but in real life I will suggest to use for example celery workers
-    for fetching data. I think that some data which does not change very often should be store in database and reuse. It will save heavy http     requests. Redis should work here as well for caching some 
+    for fetching data. I think that some data which does not change very often should be store in database and reuse. It will save heavy http     requests. Redis should work here as well for caching some data or http requests.
 
     b) SWAPI does not require any access keys so I didn't create any auth logic but If some kind of API will require then application
         should has an auth app with permissions and api tokens.
